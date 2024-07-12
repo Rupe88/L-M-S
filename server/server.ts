@@ -1,4 +1,4 @@
-import app from "./app";
+import app from "./app"
 import connectionDB from "./utils/connection";
 
 require("dotenv").config();

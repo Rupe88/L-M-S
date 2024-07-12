@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { Request, Response } from "express";
 import { ErrorMiddleware } from "./middleware/error";
+import userRouter from "./routes/userRoute"
 const app = express();
 require("dotenv").config();
 
@@ -17,8 +18,11 @@ app.use(
     origin: process.env.ORIGIN,
   })
 );
+
+//routes
+app.use("/api/v1",userRouter)
 //testing api
-app.get("/test", (req: Request, res: Response) => {
+app.get("/test", (req: Request, res: Response, next:NextFunction) => {
   return res.status(200).json({
     message: "k xa vai",
   });

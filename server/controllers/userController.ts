@@ -2,7 +2,7 @@
 import  ejs  from 'ejs';
 import { IActivationToken, IRegistrationBody } from "./../@types/user";
 import UserModel from "../models/userModel";
-import { Request, Response, NextFunction } from "express";
+import express,{ Request, Response, NextFunction } from "express";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncErrors } from "../middleware/catchAsyncErrors";
 import jwt, { Secret } from "jsonwebtoken";
@@ -11,7 +11,7 @@ import sendMail from '../utils/sendMail';
 require("dotenv").config();
 
 export const registrationUser = CatchAsyncErrors(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try {
       const { name, email, password } = req.body;
       const isEmailExist = await UserModel.findOne({ email });
