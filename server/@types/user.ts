@@ -12,3 +12,24 @@ export interface IUser extends Document{
     courses:Array<{courseId:string}>
     comparePassword:(password:string)=>Promise<boolean>
 }
+
+
+export interface IRegistrationBody{
+    name:string;
+    email:string;
+    password:string;
+    avatar?:string
+}
+
+
+export interface IActivationToken{
+    token:string;
+    activationCode:string
+}
+
+export interface EmailOptions{
+    email:string;
+    subject:string;
+    template:string;
+    data:{[key:string]:any}
+}
