@@ -20,7 +20,7 @@ app.use(
 );
 
 //routes
-app.use("/api/v1",userRouter)
+app.use("/api/auth",userRouter)
 //testing api
 app.get("/test", (req: Request, res: Response, next:NextFunction) => {
   return res.status(200).json({

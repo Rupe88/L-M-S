@@ -33,3 +33,8 @@ export interface EmailOptions{
     template:string;
     data:{[key:string]:any}
 }
+
+export interface IActivationRequest{
+    activation_token:string;
+    activation_code:string;
+}
