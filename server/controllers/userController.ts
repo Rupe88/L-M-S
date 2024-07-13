@@ -2,6 +2,7 @@ import ejs from "ejs";
 import {
   IActivationRequest,
   IActivationToken,
+  ILoginRequest,
   IRegistrationBody,
   IUser,
 } from "./../@types/user";
@@ -12,8 +13,9 @@ import jwt, { Secret } from "jsonwebtoken";
 import path from "path";
 import sendMail from "../utils/sendMail";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
+import { sendToken } from "../utils/jwt";
 require("dotenv").config();
-
+//register
 export const registrationUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -104,9 +106,38 @@ export const activateUser = CatchAsyncError(
 
       res.status(200).json({
         success: true,
+        user
       });
     } catch (error:any) {
       return next(new ErrorHandler(error.message, 404));
     }
   }
 );
+
+
+//login features
+export const loginUser=CatchAsyncError(async(req:Request, res:Response, next:NextFunction)=>{
+  try {
+    const {email,password}=req.body as ILoginRequest
+    if(!email || !password){
+      return next(new ErrorHandler("please enter email and password", 400))
+    }
+    const user=await UserModel.findOne({email}).select("+password"); //include password as well
+    if(!user){
+      return next(new ErrorHandler("invalid email or password", 400))
+    }
+    const isPasswordMatch=await user.comparePassword(password);
+    if(!isPasswordMatch){
+      return next(new ErrorHandler("Invalid email or password", 400))
+    }
+    sendToken(user,200,res);
+    
+
+    
+  } catch (error:any) {
+    return next(new ErrorHandler(error.message, 404));
+    
+  }
+})
+
+//logout features 

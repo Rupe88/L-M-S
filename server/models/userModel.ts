@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import { IUser } from "../@types/user";
+require("dotenv").config();
+import jwt from "jsonwebtoken";
 const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
@@ -56,10 +58,25 @@ userSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
+//SignAccessToken=>when user will login we create Access token
+//access_token will expire after short time in 5m
+userSchema.methods.SignAccessToken=async function(){
+  return jwt.sign({id:this._id}, process.env.ACCESS_TOKEN || '')
+
+}
+
+//sign refresh token
+//in this when access token expire our refresh token regenerate new access token 
+
+userSchema.methods.SignRefreshToken=async function(){
+  return jwt.sign({id:this._id}, process.env.REFRESH_TOKEN || '')
+
+}
+
 //comapre password
-userSchema.methods.comaprePassword = async function (
+userSchema.methods.comparePassword = async function (
   enteredPassword: string
-): Promise<boolean> {
+) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
